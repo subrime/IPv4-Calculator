@@ -23,5 +23,10 @@
         {
             return ~octet._value;
         }
+
+        public override string ToString()
+        {
+            return string.Join('.', BitConverter.GetBytes(_value).Reverse());
+        }
     }
 }

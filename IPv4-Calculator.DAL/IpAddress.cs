@@ -22,10 +22,5 @@
         {
             return new IpAddress(ipAddress.IPv4_Address - number);
         }
-
-        public override string ToString()
-        {
-            return string.Join('.', BitConverter.GetBytes(IPv4_Address).Reverse());
-        }
     }
 }
