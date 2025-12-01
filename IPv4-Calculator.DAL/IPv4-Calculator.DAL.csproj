@@ -1,15 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <TargetFramework>net10.0</TargetFramework>
-    <RootNamespace>IPv4_Calculator</RootNamespace>
+    <RootNamespace>IPv4_Calculator.DAL</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\IPv4-Calculator.DAL\IPv4-Calculator.DAL.csproj" />
-  </ItemGroup>
 
 </Project>

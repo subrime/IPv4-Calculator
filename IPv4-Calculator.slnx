@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="IPv4-Calculator.DAL/IPv4-Calculator.DAL.csproj" Id="8c384599-01fd-44c2-bc37-5d7b6dad2f9f" />
   <Project Path="IPv4-Calculator/IPv4-Calculator.csproj" />
 </Solution>
