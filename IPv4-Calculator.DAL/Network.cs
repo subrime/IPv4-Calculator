@@ -32,32 +32,38 @@
             return GetType().GetProperties().Where(x => x.GetValue(this) is Octet)
                                             .Select(x =>
                                             {
-                                                if (x.GetValue(this) is not Octet octet) return null;
+                                                if (x.GetValue(this) is not IpAddress ip ||
+                                                    ip.IPv4_Address != 0) return null;
 
-                                                var ip = uint.MinValue;
-                                                if (octet is IpAddress ipAddress)
-                                                {
-                                                    ip = ipAddress.IPv4_Address;
-                                                }
-                                                else if (octet is SubnetMask subnetmask)
-                                                {
-                                                    ip = subnetmask.Subnetmask;
-                                                }
-
-                                                if (ip != 0) return null;
-                                                return octet.IsParsed ? $"Couldn't parse the value '{octet.OriginalValue}' in {x.Name}!"
-                                                                      : $"The value '{ip}' in {x.Name} is not valid!"; ;
+                                                return ip.IsParsed 
+                                                        ? $"Couldn't parse the value '{ip.OriginalValue}' in {x.Name}!"
+                                                        : $"The value '{ip.IPv4_Address}' in {x.Name} is not valid!"; ;
                                             })
                                             .Where(x => x != null).Cast<string>();
         }
 
         public override string ToString()
         {
-            return string.Join('\n', GetType().GetProperties().Select(x => $"{x.Name}: {x.GetValue(this)}"));
+            return string.Join('\n', GetType().GetProperties().Select(x => $"{x.Name}: {x.GetValue(this)}"))
+                   + "\nCidr: /" + SubnetMask.CIDR + '\n';
         }
 
         public static IEnumerable<Network> operator /(Network network, uint divideBy)
         {
+            var newSubnetMask = network.SubnetMask / divideBy;
+            var networks = new List<Network>();
+            for (uint i = 1; i <= divideBy; i++)
+            {
+                var increaseValue = ~newSubnetMask.Subnetmask * i;
+                var netId = (network.NetID.IPv4_Address + increaseValue) & newSubnetMask.Subnetmask;
+                networks.Add(new(new IpAddress(netId + 1).ToString(), newSubnetMask.ToString()));
+            }
+            return networks;
+        }
+
+        public static IEnumerable<Network> operator *(Network network, uint hostsPerNet)
+        {
+            var divideBy = ~network.SubnetMask.Subnetmask / hostsPerNet;
             var newSubnetMask = network.SubnetMask / divideBy;
             var networks = new List<Network>();
             for (uint i = 1; i <= divideBy; i++)

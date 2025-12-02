@@ -1,4 +1,5 @@
 ﻿using IPv4_Calculator.DAL;
+using System.Threading.Channels;
 
 namespace IPv4_Calculator
 {
@@ -30,11 +31,29 @@ namespace IPv4_Calculator
             Console.WriteLine("------ Network ------");
             Console.WriteLine(network);
 
-            Console.Write("\n\nSplit: ");
-            if (uint.TryParse(Console.ReadLine(), out var split))
+            Console.Write("\n\nHow to Split (Hosts[h] | Subnets[s]): ");
+            var splitType = Console.ReadLine();
+
+            Console.WriteLine("\nSplit value: ");
+            if (!uint.TryParse(Console.ReadLine(), out var split))
+            {
+                Console.WriteLine("Couldn't convert the value!");
+                return;
+            }
+
+            if (splitType == "s")
             {
                 Console.WriteLine("\n------ Networks ------");
                 Console.WriteLine(string.Join("\n\n", network / split));
+            }
+            else if (splitType == "h")
+            {
+                Console.WriteLine("\n------ Networks ------");
+                Console.WriteLine(string.Join("\n\n", network * split));
+            }
+            else
+            {
+                Console.WriteLine("Couln't find how to split the subnet!");
             }
         }
     }

@@ -1,14 +1,14 @@
 ﻿namespace IPv4_Calculator.DAL
 {
-    public class SubnetMask : Octet
+    public class SubnetMask : IpAddress
     {
-        public SubnetMask(uint subnetMask = 0, uint cidr = 0)
+        public SubnetMask(uint subnetMask = 0, uint cidr = 0) : base(subnetMask)
         {
             CIDR = cidr;
             if (subnetMask != 0 && IsContiguous(subnetMask)) Subnetmask = subnetMask;
             else Subnetmask = uint.MaxValue << (int)(32 - CIDR);
         }
-        public SubnetMask(string subnetMask = null, string cidr = null)
+        public SubnetMask(string subnetMask = null, string cidr = null) : base(subnetMask)
         {
             if (cidr != null && uint.TryParse(cidr, out var parsedCidr))
             {
