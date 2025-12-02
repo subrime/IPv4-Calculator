@@ -15,10 +15,19 @@ namespace IPv4_Calculator
                 Console.Write("Subnetmask: ");
                 subnetmask = Console.ReadLine();
             }
+            Console.WriteLine();
 
             var network = new Network(ipAddress, subnetmask);
+            if (network.IsValid().Any())
+            {
+                foreach (var error in network.IsValid())
+                {
+                    Console.WriteLine(error);
+                }
+                return;
+            }
 
-            Console.WriteLine("\n------ Network ------");
+            Console.WriteLine("------ Network ------");
             Console.WriteLine(network);
 
             Console.Write("\n\nSplit: ");

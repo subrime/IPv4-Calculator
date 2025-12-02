@@ -41,5 +41,10 @@
         {
             return new(~(~mask.Subnetmask / divideBy));
         }
+
+        public override string ToString()
+        {
+            return string.Join('.', BitConverter.GetBytes(Subnetmask).Reverse());
+        }
     }
 }

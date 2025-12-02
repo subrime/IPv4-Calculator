@@ -10,7 +10,7 @@
             else SubnetMask = new(cidr: ipAddress.Split('/')[1]);
 
             NetID = new(IpAddress.IPv4_Address & SubnetMask.Subnetmask);
-            BroadCast = NetID + ~SubnetMask;
+            BroadCast = NetID + ~SubnetMask.Subnetmask;
 
             FirstHost = NetID + 1;
             LastHost = BroadCast - 1;
@@ -26,6 +26,30 @@
         public IpAddress LastHost { get; set; }
 
         public uint TotalHosts { get; set; }
+
+        public IEnumerable<string> IsValid()
+        {
+            return GetType().GetProperties().Where(x => x.GetValue(this) is Octet)
+                                            .Select(x =>
+                                            {
+                                                if (x.GetValue(this) is not Octet octet) return null;
+
+                                                var ip = uint.MinValue;
+                                                if (octet is IpAddress ipAddress)
+                                                {
+                                                    ip = ipAddress.IPv4_Address;
+                                                }
+                                                else if (octet is SubnetMask subnetmask)
+                                                {
+                                                    ip = subnetmask.Subnetmask;
+                                                }
+
+                                                if (ip != 0) return null;
+                                                return octet.IsParsed ? $"Couldn't parse the value '{octet.OriginalValue}' in {x.Name}!"
+                                                                      : $"The value '{ip}' in {x.Name} is not valid!"; ;
+                                            })
+                                            .Where(x => x != null).Cast<string>();
+        }
 
         public override string ToString()
         {
