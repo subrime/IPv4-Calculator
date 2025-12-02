@@ -9,6 +9,7 @@
             if (!ipAddress.Contains('/')) SubnetMask = new(subnetMask);
             else SubnetMask = new(cidr: ipAddress.Split('/')[1]);
 
+            if (SubnetMask.Subnetmask == 0) return;
             NetID = new(IpAddress.IPv4_Address & SubnetMask.Subnetmask);
             BroadCast = NetID + ~SubnetMask.Subnetmask;
 

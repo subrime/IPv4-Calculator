@@ -4,9 +4,9 @@
     {
         public SubnetMask(uint subnetMask = 0, uint cidr = 0) : base(subnetMask)
         {
-            CIDR = cidr;
-            if (subnetMask != 0 && IsContiguous(subnetMask)) Subnetmask = subnetMask;
+            if (subnetMask != 0 && subnetMask.IsContiguous()) Subnetmask = subnetMask;
             else Subnetmask = uint.MaxValue << (int)(32 - CIDR);
+            CIDR = cidr == 0 ? Subnetmask.GetCidr() : cidr;
         }
         public SubnetMask(string subnetMask = null, string cidr = null) : base(subnetMask)
         {
@@ -18,24 +18,13 @@
             }
 
             var parsedSubnetMask = ParseOctet(subnetMask);
-            if (!IsContiguous(parsedSubnetMask)) return;
+            if (!parsedSubnetMask.IsContiguous()) return;
             Subnetmask = parsedSubnetMask;
+            CIDR = Subnetmask.GetCidr();
         }
 
         public uint Subnetmask { get; set; }
         public uint CIDR { get; set; }
-
-        private bool IsContiguous(uint mask)
-        {
-            CIDR = 0;
-            for (; mask != 0; mask <<= 1)
-            {
-                CIDR++;
-                if ((mask & (1 << 31)) == 0)
-                    return false; // Highest bit is now zero, but mask is non-zero.
-            }
-            return true; // Mask was, or became 0.
-        }
 
         public static SubnetMask operator /(SubnetMask mask, uint divideBy)
         {
